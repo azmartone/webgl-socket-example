@@ -1,15 +1,36 @@
 <html>
 <head>
-	<script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script>
-		var socket = io.connect('http://localhost:9000');
+		var socket = io.connect('http://192.168.222.105:9000');
 		socket.on('news', function (data) {
 			console.log(data);
 			socket.emit('my other event', { my: 'data' });
 		});
+
+        $(function(){
+            $('.trigger').click(function(){
+                console.log("click clack");
+                socket.emit('my other event', { my: 'data' });
+            });
+        })
+
+
+        window.ondevicemotion = function(event) {
+            var xyz = {
+                gamma: event.rotationRate.gamma,
+                beta: event.rotationRate.beta,
+                alpha: event.rotationRate.alpha
+            };
+         
+            if (xyz.gamma > 1 ||xyz.beta > 1 ||xyz.alpha > 1)
+                socket.emit('my other event', xyz);
+        }
 	</script>
 </head>
 <body>
+    <div class="trigger" style="height:100px; width:100px; background:#f00" >Hello</div>
     hello!
 </body>
 </html>
