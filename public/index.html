@@ -17,16 +17,43 @@
         })
 
 
+        // window.ondevicemotion = function(event) {
+        //     var xyz = {
+        //         gamma: event.rotationRate.gamma,
+        //         beta: event.rotationRate.beta,
+        //         alpha: event.rotationRate.alpha
+        //     };
+         
+        //     if (xyz.gamma > 0.01 ||xyz.beta > 0.01 ||xyz.alpha > 0.01)
+        //         socket.emit('from phone', xyz);
+        // }
+
         window.ondevicemotion = function(event) {
             var xyz = {
-                gamma: event.rotationRate.gamma,
-                beta: event.rotationRate.beta,
-                alpha: event.rotationRate.alpha
+                x: event.acceleration.x,
+                y: event.acceleration.y,
+                z: event.acceleration.z
             };
          
-            if (xyz.gamma > 1 ||xyz.beta > 1 ||xyz.alpha > 1)
-                socket.emit('my other event', xyz);
+            if (xyz.x > 0.1 ||xyz.y > 0.1 ||xyz.z > 0.1)
+                socket.emit('lateral motion', xyz);
         }
+
+        //WACK
+
+        // window.addEventListener('deviceorientation', function(eventData) {
+
+        //     var xyz = {
+        //         gamma: event.gamma,
+        //         beta: event.beta,
+        //         alpha: event.alpha
+        //     };
+         
+        //     // if (xyz.gamma > 0.01 ||xyz.beta > 0.01 ||xyz.alpha > 0.01)
+        //         socket.emit('from phone', xyz);
+        // });
+
+
 	</script>
 </head>
 <body>

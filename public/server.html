@@ -1,0 +1,88 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="css/phones.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script>
+
+
+        window.requestAnimFrame = (function(){
+          return  window.requestAnimationFrame       ||
+                  window.webkitRequestAnimationFrame ||
+                  window.mozRequestAnimationFrame    ||
+                  function( callback ){
+                    window.setTimeout(callback, 1000 / 60);
+                  };
+        })();
+
+        var deviceDOM = null;
+        var PXPERMETER = 30;
+        $(function(){
+           deviceDOM = $("#nexus5 .device");
+           animloop();
+        });
+
+
+		var socket = io.connect('http://192.168.222.105:9000');
+        var device = {
+            rotX:0,
+            rotY:0,
+            rotZ:0,
+            x:0,
+            y:0,
+            z:0
+        }
+        socket.on('news', function (data) {
+            console.log(data);
+            socket.emit('my other event', { my: 'data' });
+        });
+
+        socket.on('to server', function (data) {        
+            device.rotZ += data.alpha * 100 * 180 / 137.9 / 10;
+            // console.log(device.rotZ);
+        });
+
+        socket.on('lateral motion to server', function (data) { 
+
+            device.x += data.x * PXPERMETER;  
+            device.y += -data.y * PXPERMETER;  
+            // device.z += data.z * PXPERMETER;
+            // console.log(device.rotZ);
+        });
+
+        var render = function(){
+            if (deviceDOM != null){
+                // deviceDOM.css({
+                //     transform:"rotateZ(" + (device.rotZ) + "deg)"
+                // });       
+                deviceDOM.css({
+                    transform:"translate3d(" + device.x + "px, " + device.y + "px, " + device.z + "px)"
+                });                 
+            }
+        }
+
+        var animloop = function(){
+          requestAnimFrame(animloop);
+          render();
+        }
+
+	</script>
+</head>
+<body>
+    <section id="nexus5">
+    <div class="wrap">
+        <h1>Nexus 5</h1>
+        <div class="device">
+            <div class="button"></div>
+            <div class="lock"></div>
+            <div class="camera"></div>
+            <div class="inner"></div>
+            <a class="screen" href="http://marvelapp.com">Marvel</a>
+        </div>
+        <ul class="selector">
+            <li class="select-landscape">Landscape</li>
+        </ul>
+    </div>
+</section>
+</body>
+</html>
