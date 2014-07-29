@@ -16,7 +16,7 @@
         })();
 
         var deviceDOM = null;
-        var PXPERMETER = 30;
+        var PXPERMETER = 10;
         $(function(){
            deviceDOM = $("#nexus5 .device");
            animloop();
@@ -37,27 +37,33 @@
             socket.emit('my other event', { my: 'data' });
         });
 
-        socket.on('to server', function (data) {        
-            device.rotZ += data.alpha * 100 * 180 / 137.9 / 10;
-            // console.log(device.rotZ);
+        socket.on('server.bga', function (data) {        
+            // device.rotZ += data.alpha * PXPERMETER;
+            device.rotZ = normalizeZ(data.alpha);
         });
 
-        socket.on('lateral motion to server', function (data) { 
+        // socket.on('lateral motion to server', function (data) { 
 
-            device.x += data.x * PXPERMETER;  
-            device.y += -data.y * PXPERMETER;  
-            // device.z += data.z * PXPERMETER;
-            // console.log(device.rotZ);
-        });
+        //     device.x += data.x * PXPERMETER;  
+        //     device.y += -data.y * PXPERMETER;  
+        //     // device.z += data.z * PXPERMETER;
+        //     // console.log(device.rotZ);
+        // });
+
+
+        var normalizeZ = function(deg){
+            var degFromZero = deg > 180 ? -(deg - 360) : -deg ;   
+            return degFromZero;
+        }
 
         var render = function(){
             if (deviceDOM != null){
-                // deviceDOM.css({
-                //     transform:"rotateZ(" + (device.rotZ) + "deg)"
-                // });       
                 deviceDOM.css({
-                    transform:"translate3d(" + device.x + "px, " + device.y + "px, " + device.z + "px)"
-                });                 
+                    transform:"rotateZ(" + (device.rotZ) + "deg)"
+                });       
+                // deviceDOM.css({
+                //     transform:"translate3d(" + device.x + "px, " + device.y + "px, " + device.z + "px)"
+                // });                 
             }
         }
 

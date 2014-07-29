@@ -2,7 +2,7 @@
 
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app);
+var server = require('http').createServer(app, { log: false });
 var io = require('socket.io').listen(server);
 
 var consolidate = require('consolidate');
@@ -15,16 +15,21 @@ app.set('views', './app/templates');
 io.sockets.on('connection', function (socket) {
 	socket.emit('news', { hello: 'world' });
 	socket.on('my other event', function (data) {
-		console.log(data);
+		// console.log(data);
 	});
 
     socket.on('from phone', function (data) {
-        console.log(data);
+        // console.log(data);
         io.sockets.emit('to server', data);
     });
 
+    socket.on('device.bga', function (data) {
+        // console.log(data);
+        io.sockets.emit('server.bga', data);
+    });
+
     socket.on('lateral motion', function (data) {
-        console.log(data);
+        // console.log(data);
         io.sockets.emit('lateral motion to server', data);
     });
 

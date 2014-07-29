@@ -3,55 +3,82 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script>
+        window.requestAnimFrame = (function(){
+          return  window.requestAnimationFrame       ||
+                  window.webkitRequestAnimationFrame ||
+                  window.mozRequestAnimationFrame    ||
+                  function( callback ){
+                    window.setTimeout(callback, 1000 / 60);
+                  };
+        })();
+
 		var socket = io.connect('http://192.168.222.105:9000');
+
+        var bga = { beta: 0, gamma: 0, alpha: 0};        
+        var xyz = { x: 0, y: 0, z: 0};
+
 		socket.on('news', function (data) {
 			console.log(data);
 			socket.emit('my other event', { my: 'data' });
 		});
+
+
 
         $(function(){
             $('.trigger').click(function(){
                 console.log("click clack");
                 socket.emit('my other event', { my: 'data' });
             });
+
+            animloop();
         })
 
 
         // window.ondevicemotion = function(event) {
-        //     var xyz = {
+        //     bga = {
         //         gamma: event.rotationRate.gamma,
         //         beta: event.rotationRate.beta,
         //         alpha: event.rotationRate.alpha
         //     };
          
-        //     if (xyz.gamma > 0.01 ||xyz.beta > 0.01 ||xyz.alpha > 0.01)
-        //         socket.emit('from phone', xyz);
+        //     // if (bga.gamma > 0.1 ||bga.beta > 0.1 ||bga.alpha > 0.1)
+        //     //     socket.emit('from phone', bga);
         // }
 
-        window.ondevicemotion = function(event) {
-            var xyz = {
-                x: event.acceleration.x,
-                y: event.acceleration.y,
-                z: event.acceleration.z
-            };
-         
-            if (xyz.x > 0.1 ||xyz.y > 0.1 ||xyz.z > 0.1)
-                socket.emit('lateral motion', xyz);
+
+        var render = function(){
+            socket.emit('device.bga', bga);
+            // socket.emit('device.bga', 'test');
+            // socket.emit('device.xyz', xyz);
         }
+
+        var animloop = function(){
+          requestAnimFrame(animloop);
+          render();
+        }
+
+        // window.ondevicemotion = function(event) {
+        //     var xyz = {
+        //         x: event.acceleration.x,
+        //         y: event.acceleration.y,
+        //         z: event.acceleration.z
+        //     };
+         
+        //     if (xyz.x > 0.1 ||xyz.y > 0.1 ||xyz.z > 0.1)
+        //         socket.emit('lateral motion', xyz);
+        // }
 
         //WACK
 
-        // window.addEventListener('deviceorientation', function(eventData) {
+        window.addEventListener('deviceorientation', function(eventData) {
+            bga = {
+                gamma: event.gamma,
+                beta: event.beta,
+                alpha: event.alpha,
+                absolute: event.absolute
+            };
+        });
 
-        //     var xyz = {
-        //         gamma: event.gamma,
-        //         beta: event.beta,
-        //         alpha: event.alpha
-        //     };
-         
-        //     // if (xyz.gamma > 0.01 ||xyz.beta > 0.01 ||xyz.alpha > 0.01)
-        //         socket.emit('from phone', xyz);
-        // });
 
 
 	</script>
