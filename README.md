@@ -31,8 +31,8 @@ On your mobile device, browser to
 On your desktop, browse to
     http://[server]:9000/server.html
 
-## Release History
-1. Orientation needs to be refined.
+## To Do
+1. Orientation metrics and animation needs to be refined.
 2. Consider using acceleration rather than orientation.
 
 ## License
