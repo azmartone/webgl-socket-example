@@ -9,7 +9,9 @@
                   };
         })();
 
-		var socket = io.connect('http://192.168.222.101:9000');
+		var server = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+
+		var socket = io.connect(server);
 
         var bga = { beta: 0, gamma: 0, alpha: 0};        
         var xyz = { x: 0, y: 0, z: 0};
